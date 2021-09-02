@@ -134,11 +134,20 @@ local function select(value)
     return
 end
 
-local function checkInput()
-    while running do
+local function listen()
+    print("Starting server")
+    modem = peripheral.find("modem", rednet.open)
+
+    print("Server started with id", os.computerID())
+
+    while running and rednet.isOpen() do
         local event, key, x, y = os.pullEventRaw()
         
-        if event == "monitor_touch" then
+        if event == "rednet_message" then
+            print("Received \"" .. x .. "\" from client with id", key)
+            addList(x)
+            saveList()
+        elseif event == "monitor_touch" then
             if x == monitorWidth then
                 if y == monitorHeight then
                     scrollList(1)
@@ -162,27 +171,8 @@ local function checkInput()
             end
         elseif event == "terminate" then
             quit()
-            break
         elseif event == "monitor_resize" then
             monitorWidth, monitorHeight = monitor.getSize()
-        end
-    end
-    
-    return
-end
-
-local function listenNet()
-    print("Starting server")
-    modem = peripheral.find("modem", rednet.open)
-
-    print("Server started with id", os.computerID())
-    
-    while running and rednet.isOpen() do
-        local id, message = rednet.receive()
-        if message then
-            print("Received \"" .. message .. "\" from client with id", id)
-            addList(message)
-            saveList()
         end
     end
     
@@ -258,5 +248,5 @@ end
 list = readList()
 
 print("Todoroki started, press q to quit")
-parallel.waitForAll(draw, checkInput, listenNet)
+parallel.waitForAll(draw, listen)
 error()
