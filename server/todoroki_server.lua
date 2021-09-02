@@ -158,7 +158,16 @@ end
 
 local function addList(todo)
     table.insert(list, todo)
-    
+
+    return
+end
+
+local function removeList(id)
+    if id > -1 and id < #list then
+        table.remove(list, id)
+        return
+    end
+
     return
 end
 
@@ -192,7 +201,14 @@ local function checkInput()
                     scrollList(-1)
                 end
             else
-                select(y + scroll)
+                local id = y + scroll
+
+                if selected == id then
+                    removeList(id)
+                    select(nil)
+                else
+                    select(id)
+                end
             end
         elseif event == "key_up" then
             if key == keys.q then
@@ -213,7 +229,7 @@ local function listenCommand()
     while running do
         print("->")
         local x, y = term.getCursorPos()
-        term.setCursorPos(3, y -1)
+        term.setCursorPos(4, y -1)
         local input = read()
     end
 
@@ -224,12 +240,12 @@ local function listenNet()
     print("Starting server")
     modem = peripheral.find("modem", rednet.open)
 
-    print("Server started")
+    print("Server started with id", os.computerID())
     
     while running and rednet.isOpen() do
         local id, message = rednet.receive()
         if message then
-            print("Received", message, "from client with id", id)
+            print("Received\"" .. message .. "\"from client with id", id)
             addList(message)
             saveList()
         end
@@ -243,5 +259,5 @@ local function listenNet()
 end
 
 list = readList()
-parallel.waitForAll(draw, checkInput, listenNet, listenCommand)
+parallel.waitForAll(draw, checkInput, listenNet)
 quit()
