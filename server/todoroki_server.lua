@@ -137,6 +137,7 @@ end
 local function checkInput()
     while running do
         local event, key, x, y = os.pullEvent()
+        local terminate = os.pullEventRaw()
         
         if event == "monitor_touch" then
             if x == monitorWidth then
@@ -160,7 +161,7 @@ local function checkInput()
             if key == keys.q then
                 quit()
             end
-        elseif event == "terminate" then
+        elseif terminate == "terminate" then
             quit()
             break
         elseif event == "monitor_resize" then
