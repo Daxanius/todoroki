@@ -26,9 +26,12 @@ local function clear()
 end
 
 function readList()
+    print("Retreiving list from file list.txt..")
+
     local file = fs.open("list.txt","r")
     
     if not file then
+        print("File not found, creating empty list")
         return {}
     end
     
@@ -37,18 +40,24 @@ function readList()
     file.close()
     
     if data == "" then
+        print("File list.txt is empty, creatig empty list")
         return {}
     end
     
+    print("List succesfully retreived from list.txt")
     return textutils.unserialise(data)
 end
 
 function saveList()
+    print("Saving list to file list.txt..")
+
     local file = fs.open("list.txt", "w")
     
     file.write(textutils.serialise(list))
     
     file.close()
+
+    print("List saved succesfully")
     return
 end
 
@@ -89,6 +98,7 @@ local function getPercentScrolled()
 end
 
 local function writeScroll()
+    monitor.setBackgroundColor(colors.black)
     monitor.setCursorPos(monitorWidth, 1)
     monitor.write("^")
     
@@ -174,16 +184,19 @@ local function checkInput()
 end
 
 local function listenNet()
+    print("Starting server..")
     modem = peripheral.find("modem", rednet.open)
     
     while running and rednet.isOpen() do
         local id, message = rednet.receive()
         if message then
+            print("Received", message, "from client with id", id)
             addList(message)
             saveList()
         end
     end
     
+    print("Stopping server..")
     rednet.close()
     return
 end
