@@ -17,7 +17,7 @@ local scroll = 0
 local selected
 
 local function quit(--[[optional]]message)
-    message = message or ""
+    message = message or nil
 
     running = false
     saveList()
@@ -74,7 +74,7 @@ function readList()
             return {}
         end
 
-        quit("Save data is corrupt")
+        error("Save data is corrupt")
     end
     
     print("List succesfully retreived from list.txt")
@@ -211,7 +211,9 @@ end
 
 local function listenCommand()
     while running do
-        print("-> ")
+        print("->")
+        local x, y = termgetCursorPos()
+        term.setCursorPos(3, y -1)
         local input = read()
     end
 
