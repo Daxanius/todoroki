@@ -14,7 +14,6 @@ print("Peripherals OK")
 print("Starting Todoroki")
 
 local monitorWidth, monitorHeight = monitor.getSize()
-local termWidth, termHeight = term.getSize()
 
 local running = true
 local list = {}
@@ -99,68 +98,6 @@ function saveList()
     return
 end
 
-local function writeList(list, --[[optional]]index)
-    index = index or 0
-    
-    if not list then
-        return
-    end
-    
-    for line = index, index + monitorHeight, 1 do
-        monitor.setCursorPos(1, line - index)
-        monitor.setBackgroundColor(colors.black)
-        monitor.clearLine()
-
-        if line == selected then
-            monitor.setBackgroundColor(colors.blue)
-        end
-        
-        monitor.write(list[line])
-    end
-    
-    return
-end
-
-local function getPercentScrolled()
-    if not list then
-        return 0
-    end
-
-    local result = scroll * 100 / (#list - monitorHeight)
-    
-    if result ~= result then
-        return 0
-    end
-    
-    return result
-end
-
-local function writeScroll()
-    monitor.setBackgroundColor(colors.black)
-    monitor.setCursorPos(monitorWidth, 1)
-    monitor.write("^")
-    
-    local y = getPercentScrolled() * (monitorHeight -3) / 100
-    monitor.setCursorPos(monitorWidth, y +2)
-    monitor.write("#")
-    
-    monitor.setCursorPos(monitorWidth, monitorHeight)
-    monitor.write("v")
-
-    return
-end
-
-local function draw()
-    while running do
-        clear()
-        writeList(list, scroll)
-        writeScroll()
-        sleep()
-    end
-    
-    return
-end
-
 local function addList(todo)
     print("Adding \"" .. todo .. "\" to list")
     table.insert(list, todo)
@@ -232,17 +169,6 @@ local function checkInput()
     return
 end
 
-local function listenCommand()
-    while running do
-        print("->")
-        local x, y = term.getCursorPos()
-        term.setCursorPos(4, y -1)
-        local input = read()
-    end
-
-    return
-end
-
 local function listenNet()
     print("Starting server")
     modem = peripheral.find("modem", rednet.open)
@@ -262,6 +188,68 @@ local function listenNet()
     rednet.close()
 
     print("Server stopped")
+    return
+end
+
+local function getPercentScrolled()
+    if not list then
+        return 0
+    end
+
+    local result = scroll * 100 / (#list - monitorHeight)
+    
+    if result ~= result then
+        return 0
+    end
+    
+    return result
+end
+
+local function writeList(list, --[[optional]]index)
+    index = index or 0
+    
+    if not list then
+        return
+    end
+    
+    for line = index, index + monitorHeight, 1 do
+        monitor.setCursorPos(1, line - index)
+        monitor.setBackgroundColor(colors.black)
+        monitor.clearLine()
+
+        if line == selected then
+            monitor.setBackgroundColor(colors.blue)
+        end
+        
+        monitor.write(list[line])
+    end
+    
+    return
+end
+
+local function writeScroll()
+    monitor.setBackgroundColor(colors.black)
+    monitor.setCursorPos(monitorWidth, 1)
+    monitor.write("^")
+    
+    local y = getPercentScrolled() * (monitorHeight -3) / 100
+    monitor.setCursorPos(monitorWidth, y +2)
+    monitor.write("#")
+    
+    monitor.setCursorPos(monitorWidth, monitorHeight)
+    monitor.write("v")
+
+    return
+end
+
+local function draw()
+    while running do
+        clear()
+        writeList(list, scroll)
+        writeScroll()
+        sleep()
+    end
+    
     return
 end
 
