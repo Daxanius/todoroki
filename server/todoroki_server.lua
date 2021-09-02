@@ -169,8 +169,8 @@ local function addList(todo)
 end
 
 local function removeList(id)
-    if id > -1 and id < #list then
-        print("Removing \"" .. list[id] "\" from list")
+    if id > -1 and id <= #list then
+        print("Removing \"" .. list[id] .. "\" from list")
         table.remove(list, id)
         return
     end
