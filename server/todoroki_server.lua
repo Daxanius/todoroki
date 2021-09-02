@@ -15,6 +15,27 @@ local list = {}
 local scroll = 0
 local selected
 
+local function quit(--[[optional]]message)
+    message = message or ""
+
+    running = false
+    saveList()
+    error(message)
+    return
+end
+
+local function prompt(message, --[[optional]]color)
+    color = color or colors.white
+    term.write(message)
+    local answer = read()
+
+    if string.lower(answer) ~= "y" then
+        return false
+    end
+
+    return true
+end
+
 local function clear()
     monitor.setBackgroundColor(colors.black)
     
@@ -26,7 +47,7 @@ local function clear()
 end
 
 function readList()
-    print("Retreiving list from file list.txt..")
+    print("Retreiving list from file list.txt")
 
     local file = fs.open("list.txt","r")
     
@@ -43,13 +64,24 @@ function readList()
         print("File list.txt is empty, creatig empty list")
         return {}
     end
+
+    local list = textutils.unserialise(data)
+
+    if not list then
+        if prompt("File list.txt is corrupt, overwrite file (y/n)? ", colors.yellow) then
+            print("Creating empty list")
+            return {}
+        end
+
+        quit("Save data is corrupt")
+    end
     
     print("List succesfully retreived from list.txt")
-    return textutils.unserialise(data)
+    return list
 end
 
 function saveList()
-    print("Saving list to file list.txt..")
+    print("Saving list to file list.txt")
 
     local file = fs.open("list.txt", "w")
     
@@ -123,13 +155,6 @@ local function draw()
     return
 end
 
-local function quit()
-    running = false
-    saveList()
-    error()
-    return
-end
-
 local function addList(todo)
     table.insert(list, todo)
     
@@ -183,9 +208,18 @@ local function checkInput()
     return
 end
 
+local function listenCommand()
+    while running do
+        term.write("-> ")
+        local input = read()
+    end
+end
+
 local function listenNet()
-    print("Starting server..")
+    print("Starting server")
     modem = peripheral.find("modem", rednet.open)
+
+    print("Server started")
     
     while running and rednet.isOpen() do
         local id, message = rednet.receive()
@@ -196,11 +230,13 @@ local function listenNet()
         end
     end
     
-    print("Stopping server..")
+    print("Stopping server")
     rednet.close()
+
+    print("Server stopped")
     return
 end
 
 list = readList()
-parallel.waitForAll(draw, checkInput, listenNet)
+parallel.waitForAll(draw, checkInput, listenCommand,listenNet)
 quit()
