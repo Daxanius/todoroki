@@ -1,3 +1,5 @@
+print("Checking peripherals")
+
 local monitor = peripheral.find("monitor")
 if not monitor then
     error("No monitor found")
@@ -7,6 +9,9 @@ local modem = peripheral.find("modem")
 if not modem then
     error("No modem found")
 end
+
+print("Peripherals OK")
+print("Starting Todoroki")
 
 local monitorWidth, monitorHeight = monitor.getSize()
 local termWidth, termHeight = term.getSize()
@@ -157,6 +162,7 @@ local function draw()
 end
 
 local function addList(todo)
+    print("Adding \"" .. todo .. "\" to list")
     table.insert(list, todo)
 
     return
@@ -164,6 +170,7 @@ end
 
 local function removeList(id)
     if id > -1 and id < #list then
+        print("Removing \"" .. list[id] "\" from list")
         table.remove(list, id)
         return
     end
@@ -245,7 +252,7 @@ local function listenNet()
     while running and rednet.isOpen() do
         local id, message = rednet.receive()
         if message then
-            print("Received\"" .. message .. "\"from client with id", id)
+            print("Received \"" .. message .. "\" from client with id", id)
             addList(message)
             saveList()
         end
@@ -259,5 +266,7 @@ local function listenNet()
 end
 
 list = readList()
+
+print("Todoroki started, press q to quit")
 parallel.waitForAll(draw, checkInput, listenNet)
 quit()
