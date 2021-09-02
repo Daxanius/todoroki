@@ -20,12 +20,25 @@ local list = {}
 local scroll = 0
 local selected
 
-local function quit(--[[optional]]message)
+local function clear()
+    monitor.setBackgroundColor(colors.black)
+    
+    monitor.clear()
+    monitor.setTextScale(0.5)
+    monitor.setCursorPos(1,1)
+
+    return
+end
+
+local function quit()
     message = message or nil
 
+    print("Quitting Todoroki")
+
     running = false
+    monitor.clear()
+
     saveList()
-    error(message)
     return
 end
 
@@ -39,16 +52,6 @@ local function prompt(message, --[[optional]]color)
     end
 
     return true
-end
-
-local function clear()
-    monitor.setBackgroundColor(colors.black)
-    
-    monitor.clear()
-    monitor.setTextScale(0.5)
-    monitor.setCursorPos(1,1)
-
-    return
 end
 
 function readList()
@@ -206,7 +209,7 @@ local function getPercentScrolled()
     return result
 end
 
-local function writeList(list, --[[optional]]index)
+local function drawList(list, --[[optional]]index)
     index = index or 0
     
     if not list then
@@ -228,7 +231,7 @@ local function writeList(list, --[[optional]]index)
     return
 end
 
-local function writeScroll()
+local function drawScroll()
     monitor.setBackgroundColor(colors.black)
     monitor.setCursorPos(monitorWidth, 1)
     monitor.write("^")
@@ -246,8 +249,8 @@ end
 local function draw()
     while running do
         clear()
-        writeList(list, scroll)
-        writeScroll()
+        drawList(list, scroll)
+        drawScroll()
         sleep()
     end
     
@@ -258,4 +261,4 @@ list = readList()
 
 print("Todoroki started, press q to quit")
 parallel.waitForAll(draw, checkInput, listenNet)
-quit()
+error()
