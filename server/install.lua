@@ -7,6 +7,6 @@ if string.lower(input) ~= "y" then
 end
 
 print("Installing todoroki server...")
-shell.run("wget https://github.com/Daxanius/todoroki/blob/develop/server/todoroki_server.lua")
+shell.run("wget https://raw.githubusercontent.com/Daxanius/todoroki/develop/server/todoroki_server.lua")
 
 print("Intallation finished")
