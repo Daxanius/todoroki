@@ -149,6 +149,7 @@ local function checkInput()
 
                 if selected == id then
                     removeList(id)
+                    saveList()
                     select(nil)
                 else
                     select(id)
