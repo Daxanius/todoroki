@@ -31,8 +31,6 @@ local function clear()
 end
 
 local function quit()
-    message = message or nil
-
     print("Quitting Todoroki")
 
     running = false
