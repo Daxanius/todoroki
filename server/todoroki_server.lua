@@ -141,7 +141,7 @@ local function listen()
     print("Server started with id", os.computerID())
 
     while running and rednet.isOpen() do
-        local event, key, x, y = os.pullEventRaw()
+        local event, key, x, y = os.pullEvent()
         
         if event == "rednet_message" then
             print("Received \"" .. x .. "\" from client with id", key)
@@ -169,8 +169,6 @@ local function listen()
             if key == keys.q then
                 quit()
             end
-        elseif event == "terminate" then
-            quit()
         elseif event == "monitor_resize" then
             monitorWidth, monitorHeight = monitor.getSize()
         end
