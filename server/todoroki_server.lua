@@ -212,7 +212,7 @@ end
 local function listenCommand()
     while running do
         print("->")
-        local x, y = termgetCursorPos()
+        local x, y = term.getCursorPos()
         term.setCursorPos(3, y -1)
         local input = read()
     end
