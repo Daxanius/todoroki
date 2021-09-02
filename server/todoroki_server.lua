@@ -211,11 +211,11 @@ end
 
 local function listenCommand()
     while running do
-        term.setCursorPos(1,termHeight)
-        term.clearLine()
-        term.write("-> ")
+        print("-> ")
         local input = read()
     end
+
+    return
 end
 
 local function listenNet()
@@ -241,5 +241,5 @@ local function listenNet()
 end
 
 list = readList()
-parallel.waitForAll(draw, checkInput, listenCommand,listenNet)
+parallel.waitForAll(draw, checkInput, listenNet, listenCommand)
 quit()
