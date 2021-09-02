@@ -9,6 +9,7 @@ if not modem then
 end
 
 local monitorWidth, monitorHeight = monitor.getSize()
+local termWidth, termHeight = term.getSize()
 
 local running = true
 local list = {}
@@ -210,6 +211,8 @@ end
 
 local function listenCommand()
     while running do
+        term.setCursorPos(1,termHeight)
+        term.clearLine()
         term.write("-> ")
         local input = read()
     end
