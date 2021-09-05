@@ -81,7 +81,7 @@ function readList()
 
         error("Save data is corrupt")
     end
-    
+
     print("List succesfully retreived from list.txt")
     return list
 end
@@ -138,7 +138,7 @@ local function listen()
     print("Starting server")
     modem = peripheral.find("modem", rednet.open)
 
-    print("Server started with id", os.computerID())
+    print("Server started with ID", os.computerID())
 
     while running and rednet.isOpen() do
         local event, key, x, y = os.pullEvent()
@@ -168,6 +168,11 @@ local function listen()
         elseif event == "key_up" then
             if key == keys.q then
                 quit()
+            elseif key == keys.s then
+                saveList()
+            elseif key == keys.r then
+                print("Reloading list")
+                readList()
             end
         elseif event == "monitor_resize" then
             monitorWidth, monitorHeight = monitor.getSize()
@@ -247,4 +252,3 @@ list = readList()
 
 print("Todoroki started, press q to quit")
 parallel.waitForAll(draw, listen)
-error()

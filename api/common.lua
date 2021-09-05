@@ -1,0 +1,2 @@
+-- A list of common functions both used by
+-- the Todoroki client and server
