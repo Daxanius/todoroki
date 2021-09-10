@@ -144,9 +144,15 @@ local function listen()
         local event, key, x, y = os.pullEvent()
         
         if event == "rednet_message" then
-            print("Received \"" .. x .. "\" from client with id", key)
-            addList(x)
-            saveList()
+            if x == "ping" then
+                print("Received ping from client with id", key)
+                print("Replying with confirmation")
+                rednet.send(key, "pong")
+            else 
+                print("Received \"" .. x .. "\" from client with id", key)
+                addList(x)
+                saveList()
+            end
         elseif event == "monitor_touch" then
             if x == monitorWidth then
                 if y == monitorHeight then

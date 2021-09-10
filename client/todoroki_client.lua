@@ -31,6 +31,33 @@ local function quit()
     return
 end
 
+local function handShake(id)
+    print("Checking connection")
+    modem = peripheral.find("modem", rednet.open)
+
+    print("Pinging server")
+    rednet.send(id, "ping")
+
+    print("Awaiting response")
+    local i = 0
+    local response_id, response
+    while response_id ~= id and i < 256 do
+        response_id, response = rednet.receive()
+        os.pullEvent()
+        i = i +1
+    end
+
+    if response ~= "pong" or response_id ~= id then
+        print("Connection failed")
+        rednet.close()
+        return false
+    end
+
+    print("Connection verified")
+    rednet.close()
+    return true
+end
+
 local function send(id, todo, --[[optional]]type)
     type = type or 0
 
@@ -53,7 +80,10 @@ end
 
 local serverID = settings.get("todoroki_client.serverid")
 if not serverID then
+    settings.define("todoroki_client.serverid")
     term.write("Server ID: ")
-    local value = read()
-    set("todoroki_client.serverid", value)
+    local serverID = read()
+    settings.set("todoroki_client.serverid", serverID)
 end
+
+handShake(serverID)
