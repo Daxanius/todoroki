@@ -34,6 +34,7 @@ local function quit()
     print("Quitting Todoroki")
 
     running = false
+    rednet.close()
     monitor.clear()
 
     saveList()
