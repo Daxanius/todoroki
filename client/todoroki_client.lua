@@ -80,10 +80,9 @@ end
 
 local serverID = settings.get("todoroki_client.serverid")
 if not serverID then
-    settings.define("todoroki_client.serverid")
     term.write("Server ID: ")
     local serverID = read()
     settings.set("todoroki_client.serverid", serverID)
 end
 
-handShake(serverID)
+handShake(tonumber(serverID))
