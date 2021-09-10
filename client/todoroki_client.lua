@@ -26,7 +26,8 @@ local function quit()
     print("Quitting Todoroki")
 
     running = false
-    term.clear()
+    rednet.close()
+    clear()
 
     return
 end
@@ -39,13 +40,7 @@ local function handShake(id)
     rednet.send(id, "ping")
 
     print("Awaiting response")
-    local i = 0
-    local response_id, response
-    while response_id ~= id and i < 256 do
-        response_id, response = rednet.receive()
-        os.pullEvent()
-        i = i +1
-    end
+    local response_id, response = rednet.receive()
 
     if response ~= "pong" or response_id ~= id then
         print("Connection failed")
@@ -78,6 +73,23 @@ local function send(id, todo, --[[optional]]type)
     return
 end
 
+local function drawBackground()
+    paintutils.drawFilledBox(1, 1, screenWidth, screenHeight, colors.blue)
+end
+
+local function drawPrompt()
+    paintutils.drawFilledBox(screenHeight / 2, screenWidth / 2 - 10, screenHeight / 2, screenWidth / 2)
+end
+
+local function draw()
+    while running do
+        clear()
+        drawBackground()
+        drawPrompt()
+        sleep()
+    end
+end
+
 local serverID = settings.get("todoroki_client.serverid")
 if not serverID then
     term.write("Server ID: ")
@@ -85,4 +97,9 @@ if not serverID then
     settings.set("todoroki_client.serverid", serverID)
 end
 
-handShake(tonumber(serverID))
+if not handShake(tonumber(serverID)) then
+    quit()
+end
+
+print("Todoroki started")
+draw()
