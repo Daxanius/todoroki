@@ -78,7 +78,11 @@ local function drawBackground()
 end
 
 local function drawPrompt()
-    window.drawFilledBox(screenWidth / 2 -9, screenHeight / 2, screenWidth / 2 +10, screenHeight / 2, colors.black)
+    paintutils.drawFilledBox(screenWidth / 2, screenHeight / 2, screenWidth / 2 +10, screenHeight / 2, colors.black)
+    term.setCursorPos(screenWidth / 2 -9, screenHeight / 2)
+    term.write("Request todo:")
+    term.setCursorPos(screenWidth / 2 -9, screenHeight / 2)
+    term.read()
 end
 
 local function draw()
