@@ -79,10 +79,10 @@ end
 
 local function drawPrompt()
     paintutils.drawFilledBox(screenWidth / 2, screenHeight / 2, screenWidth / 2 +10, screenHeight / 2, colors.black)
-    term.setCursorPos(screenWidth / 2 -9, screenHeight / 2)
+    term.setCursorPos(screenWidth / 2 -14, screenHeight / 2)
     term.write("Request todo:")
-    term.setCursorPos(screenWidth / 2 -9, screenHeight / 2)
-    term.read()
+    term.setCursorPos(screenWidth / 2, screenHeight / 2)
+    read()
 end
 
 local function draw()
