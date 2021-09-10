@@ -78,7 +78,7 @@ local function drawBackground()
 end
 
 local function drawPrompt()
-    paintutils.drawFilledBox(screenHeight / 2, screenWidth / 2 - 10, screenHeight / 2, screenWidth / 2)
+    window.drawFilledBox(screenWidth / 2 -9, screenHeight / 2, screenWidth / 2 +10, screenHeight / 2, colors.black)
 end
 
 local function draw()
